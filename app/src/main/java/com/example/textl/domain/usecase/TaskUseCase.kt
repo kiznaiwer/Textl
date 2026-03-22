@@ -9,11 +9,11 @@ class TaskUseCase(
     fun observeTasks(userId: String) = repository.observeTasks(userId)
 
     suspend fun createTask(
-        tittle: String,
+        title: String,
         description: String?,
         userId: String
     ): Result<Unit> {
-        return repository.createTask(tittle, description, userId)
+        return repository.createTask(title, description, userId)
     }
 
     suspend fun deleteTask(
