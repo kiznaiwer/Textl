@@ -4,12 +4,12 @@ import com.example.textl.data.dto.TaskDto
 import com.example.textl.domain.model.Task
 
 
-    fun TaskDto.toDomain(): Task {
+    fun TaskDto.toDomain(id: String): Task {
         return Task(
             id = id,
             title = title,
             description = description,
-            isCompleted = isCompleted,
+            isCompleted = completed,
             createdAt = createdAt,
             userId = userId
         )
@@ -17,10 +17,9 @@ import com.example.textl.domain.model.Task
 
     fun Task.toDto(): TaskDto {
         return TaskDto(
-            id = id,
             title = title,
             description = description,
-            isCompleted = isCompleted,
+            completed = isCompleted,
             createdAt = createdAt,
             userId = userId
         )

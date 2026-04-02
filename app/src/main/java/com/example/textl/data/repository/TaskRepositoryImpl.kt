@@ -1,5 +1,6 @@
 package com.example.textl.data.repository
 
+import android.util.Log
 import com.example.textl.data.dto.TaskDto
 import com.example.textl.data.mapper.toDomain
 import com.example.textl.domain.model.Task
@@ -27,9 +28,9 @@ class TaskRepositoryImpl @Inject constructor(
 
                 val tasks = snapshot?.documents
                     ?.mapNotNull { doc ->
-                        doc.toObject(TaskDto::class.java)?.copy(id = doc.id)
+                        doc.toObject(TaskDto::class.java)
+                            ?.let { it.toDomain(doc.id) }
                     }
-                    ?.map { it.toDomain() }
                     ?: emptyList()
 
                 trySend(tasks)
@@ -50,7 +51,7 @@ class TaskRepositoryImpl @Inject constructor(
             val task = TaskDto(
                 title = title,
                 description = description,
-                isCompleted = false,
+                completed = false,
                 createdAt = System.currentTimeMillis(),
                 userId = userId
             )
@@ -83,8 +84,9 @@ class TaskRepositoryImpl @Inject constructor(
         return try{
             tasksCollection
                 .document(taskId)
-                .update("isCompleted", isCompleted)
+                .update("completed", isCompleted)
                 .await()
+
 
             Result.success(Unit)
         } catch (e: Exception){

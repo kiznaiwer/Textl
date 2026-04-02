@@ -1,5 +1,6 @@
 package com.example.textl.UI.task
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.textl.domain.usecase.AuthUseCase
@@ -34,6 +35,19 @@ class TaskViewModel @Inject constructor(
                 description = description,
                 userId = userId
             )
+        }
+    }
+
+    fun updateTask(taskId: String, isCompleted: Boolean) {
+        Log.d("VM", "updateTask: $taskId → $isCompleted")
+        viewModelScope.launch {
+            taskUseCase.updateTaskCompletion(taskId, isCompleted)
+        }
+    }
+
+    fun deleteTask(taskId: String) {
+        viewModelScope.launch {
+            taskUseCase.deleteTask(taskId)
         }
     }
 }
