@@ -3,7 +3,8 @@ import com.example.textl.domain.model.User
 
 interface AuthRepository {
 
-    suspend fun login(
+    suspend fun
+            login(
         email: String,
         password: String
     ): Result<Unit>

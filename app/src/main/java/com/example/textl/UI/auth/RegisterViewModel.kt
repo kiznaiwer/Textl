@@ -8,6 +8,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.textl.domain.usecase.AuthUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,16 +20,28 @@ class RegisterViewModel @Inject constructor(
     var email by mutableStateOf("")
     var password by mutableStateOf("")
 
+    private val _events = MutableSharedFlow<String>()
+    val events = _events.asSharedFlow()
+
     fun register(
-        onSuccess: () -> Unit,
-        onError: (String) -> Unit
+        onSuccess: () -> Unit
     ) {
         viewModelScope.launch {
+
+            if (email.isBlank() || password.isBlank()) {
+                _events.emit("Fill all fields")
+                return@launch
+            }
+
             val result = authUseCase.register(email, password)
 
             result
-                .onSuccess { onSuccess() }
-                .onFailure { onError(it.message ?: "Registration error") }
+                .onSuccess {
+                    onSuccess()
+                }
+                .onFailure {
+                    _events.emit(it.message ?: "Unknown error")
+                }
         }
     }
 }

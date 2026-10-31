@@ -10,6 +10,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
+import com.example.textl.R
+
 
 @Composable
 fun CreateTaskDialog(
@@ -21,19 +24,19 @@ fun CreateTaskDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("New Task") },
+        title = { Text(stringResource(R.string.new_task)) },
 
         text = {
             Column {
                 OutlinedTextField(
                     value = title,
                     onValueChange = { title = it },
-                    label = { Text("Title") }
+                    label = { Text(stringResource(R.string.title)) }
                 )
                 OutlinedTextField(
                     value = description,
                     onValueChange = { description = it },
-                    label = { Text("Description") }
+                    label = { Text(stringResource(R.string.description)) }
                 )
             }
         },
@@ -46,13 +49,13 @@ fun CreateTaskDialog(
                     }
                 }
             ) {
-                Text("Create")
+                Text(stringResource(R.string.create))
             }
         },
 
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel")
+                Text(stringResource(R.string.cancel))
             }
         }
     )

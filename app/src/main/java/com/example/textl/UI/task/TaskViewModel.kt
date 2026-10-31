@@ -1,5 +1,6 @@
 package com.example.textl.UI.task
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.textl.domain.usecase.AuthUseCase
@@ -7,6 +8,7 @@ import com.example.textl.domain.usecase.TaskUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -14,7 +16,9 @@ class TaskViewModel @Inject constructor(
     private val taskUseCase: TaskUseCase,
     private val authUseCase: AuthUseCase
 ) : ViewModel() {
-    private val userId = authUseCase.getCurrentUser()?.id ?: ""
+    private val userId: String
+        get() = authUseCase.getCurrentUser()?.id
+            ?: throw IllegalStateException("User not authorized")
 
     val tasks = taskUseCase
         .observeTasks(userId)
@@ -23,4 +27,27 @@ class TaskViewModel @Inject constructor(
             SharingStarted.WhileSubscribed(5000),
             emptyList()
         )
+
+    fun createTask(title: String, description: String?) {
+        viewModelScope.launch {
+            taskUseCase.createTask(
+                title = title,
+                description = description,
+                userId = userId
+            )
+        }
+    }
+
+    fun updateTask(taskId: String, isCompleted: Boolean) {
+        Log.d("VM", "updateTask: $taskId → $isCompleted")
+        viewModelScope.launch {
+            taskUseCase.updateTaskCompletion(taskId, isCompleted)
+        }
+    }
+
+    fun deleteTask(taskId: String) {
+        viewModelScope.launch {
+            taskUseCase.deleteTask(taskId)
+        }
+    }
 }

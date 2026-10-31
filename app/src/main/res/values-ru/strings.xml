@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Textl</string>
+    <string name="login">Вход</string>
+    <string name="register">Регистрация</string>
+    <string name="add_task">Добавить задачу</string>
+    <string name="delete">Удалить</string>
+    <string name="email">Почта</string>
+    <string name="password">Пароль</string>
+    <string name="new_task">Новое задание</string>
+    <string name="title">Название</string>
+    <string name="description">Описание</string>
+    <string name="create">Создать</string>
+    <string name="cancel">Назад</string>
+    <string name="fill_all_fields">Заполните все поля</string>
+    <string name="have_account">Есть аккаунт? Войти</string>
+    <string name="task">Задание</string>
+</resources>

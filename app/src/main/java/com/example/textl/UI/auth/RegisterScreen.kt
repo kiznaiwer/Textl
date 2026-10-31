@@ -10,16 +10,26 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.textl.UI.navigation.Routes
+import com.example.textl.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 
 @Composable
@@ -28,75 +38,81 @@ fun RegisterScreen(
     viewModel: RegisterViewModel = hiltViewModel()
 ) {
 
-    val context = LocalContext.current
+    val snackbarHostState = remember { SnackbarHostState() }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center
-    ) {
+    // Слушаем события из ViewModel
+    LaunchedEffect(Unit) {
+        viewModel.events.collect { message ->
+            snackbarHostState.showSnackbar(message)
+        }
+    }
 
-        Text(
-            text = "Register",
-            style = MaterialTheme.typography.headlineMedium
-        )
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) }
+    ) { padding ->
 
-        Spacer(Modifier.height(24.dp))
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .padding(24.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
 
-        TextField(
-            value = viewModel.email,
-            onValueChange = { viewModel.email = it },
-            label = { Text("Email") },
-            modifier = Modifier.fillMaxWidth()
-        )
+            Text(
+                text = stringResource(R.string.register),
+                style = MaterialTheme.typography.headlineMedium
+            )
 
-        Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(24.dp))
 
-        TextField(
-            value = viewModel.password,
-            onValueChange = { viewModel.password = it },
-            label = { Text("Password") },
-            modifier = Modifier.fillMaxWidth()
-        )
+            OutlinedTextField(
+                value = viewModel.email,
+                onValueChange = { viewModel.email = it },
+                label = { Text(stringResource(R.string.email)) },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
+            )
 
-        Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(12.dp))
 
-        Button(
-            onClick = {
-                if(viewModel.email.isBlank() || viewModel.password.isBlank()) {
-                    Toast
-                        .makeText(context, "Fill all fields", Toast.LENGTH_SHORT)
-                        .show()
-                    return@Button
-                }
-                viewModel.register(
-                    onSuccess = {
-                        navController.navigate(Routes.TASKS) {
-                            popUpTo(Routes.REGISTER) { inclusive = true }
+            OutlinedTextField(
+                value = viewModel.password,
+                onValueChange = { viewModel.password = it },
+                label = { Text(stringResource(R.string.password)) },
+                singleLine = true,
+                visualTransformation = PasswordVisualTransformation(),
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(Modifier.height(24.dp))
+
+            Button(
+                onClick = {
+                    viewModel.register(
+                        onSuccess = {
+                            navController.navigate(Routes.TASKS) {
+                                popUpTo(Routes.REGISTER) { inclusive = true }
+                            }
                         }
-                    },
-                    onError = { message ->
-                        Toast
-                            .makeText(context, message, Toast.LENGTH_LONG)
-                            .show()
-                    }
-                )
-            },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Register")
-        }
-
-        Spacer(Modifier.height(8.dp))
-
-        TextButton(
-            onClick = {
-                navController.popBackStack()
+                    )
+                },
+                enabled = viewModel.email.isNotBlank() && viewModel.password.isNotBlank(),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(stringResource(R.string.register))
             }
-        ) {
-            Text("Already have an account? Login")
-        }
 
+            Spacer(Modifier.height(12.dp))
+
+            TextButton(
+                onClick = {
+                    navController.popBackStack()
+                }
+            ) {
+                Text(stringResource(R.string.have_account))
+            }
+        }
     }
 }

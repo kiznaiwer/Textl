@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1023421329232",
+    "project_id": "textl-9010c",
+    "storage_bucket": "textl-9010c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1023421329232:android:a8c1483a48169573b38655",
+        "android_client_info": {
+          "package_name": "com.example.textl"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZXuTZytOud523g5TK356NJEcpztdGy5M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
