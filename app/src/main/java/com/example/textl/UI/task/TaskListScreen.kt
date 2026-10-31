@@ -23,7 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.example.textl.R
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.textl.UI.ThemeViewModel
+import com.example.textl.UI.theme.ThemeViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)

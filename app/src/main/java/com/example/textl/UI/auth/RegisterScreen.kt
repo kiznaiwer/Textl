@@ -11,10 +11,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -33,80 +38,81 @@ fun RegisterScreen(
     viewModel: RegisterViewModel = hiltViewModel()
 ) {
 
-    val context = LocalContext.current
+    val snackbarHostState = remember { SnackbarHostState() }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-
-        Text(
-            text = stringResource(R.string.register),
-            style = MaterialTheme.typography.headlineMedium
-        )
-
-        Spacer(Modifier.height(24.dp))
-
-        OutlinedTextField(
-            value = viewModel.email,
-            onValueChange = { viewModel.email = it },
-            label = { Text(stringResource(R.string.email)) },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(Modifier.height(12.dp))
-
-        OutlinedTextField(
-            value = viewModel.password,
-            onValueChange = { viewModel.password = it },
-            label = { Text(stringResource(R.string.password)) },
-            singleLine = true,
-            visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(Modifier.height(24.dp))
-
-        Button(
-            onClick = {
-                if (viewModel.email.isBlank() || viewModel.password.isBlank()) {
-                    Toast
-                        .makeText(context, "Fill all fields", Toast.LENGTH_SHORT)
-                        .show()
-                    return@Button
-                }
-
-                viewModel.register(
-                    onSuccess = {
-                        navController.navigate(Routes.TASKS) {
-                            popUpTo(Routes.REGISTER) { inclusive = true }
-                        }
-                    },
-                    onError = { message ->
-                        Toast
-                            .makeText(context, message, Toast.LENGTH_LONG)
-                            .show()
-                    }
-                )
-            },
-            enabled = viewModel.email.isNotBlank() && viewModel.password.isNotBlank(),
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(stringResource(R.string.register))
+    // Слушаем события из ViewModel
+    LaunchedEffect(Unit) {
+        viewModel.events.collect { message ->
+            snackbarHostState.showSnackbar(message)
         }
+    }
 
-        Spacer(Modifier.height(12.dp))
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) }
+    ) { padding ->
 
-        TextButton(
-            onClick = {
-                navController.popBackStack()
-            }
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .padding(24.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(stringResource(R.string.have_account))
+
+            Text(
+                text = stringResource(R.string.register),
+                style = MaterialTheme.typography.headlineMedium
+            )
+
+            Spacer(Modifier.height(24.dp))
+
+            OutlinedTextField(
+                value = viewModel.email,
+                onValueChange = { viewModel.email = it },
+                label = { Text(stringResource(R.string.email)) },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(Modifier.height(12.dp))
+
+            OutlinedTextField(
+                value = viewModel.password,
+                onValueChange = { viewModel.password = it },
+                label = { Text(stringResource(R.string.password)) },
+                singleLine = true,
+                visualTransformation = PasswordVisualTransformation(),
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(Modifier.height(24.dp))
+
+            Button(
+                onClick = {
+                    viewModel.register(
+                        onSuccess = {
+                            navController.navigate(Routes.TASKS) {
+                                popUpTo(Routes.REGISTER) { inclusive = true }
+                            }
+                        }
+                    )
+                },
+                enabled = viewModel.email.isNotBlank() && viewModel.password.isNotBlank(),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(stringResource(R.string.register))
+            }
+
+            Spacer(Modifier.height(12.dp))
+
+            TextButton(
+                onClick = {
+                    navController.popBackStack()
+                }
+            ) {
+                Text(stringResource(R.string.have_account))
+            }
         }
     }
 }

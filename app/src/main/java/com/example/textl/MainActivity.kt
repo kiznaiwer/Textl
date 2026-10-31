@@ -7,8 +7,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import com.example.textl.UI.TextlTheme
-import com.example.textl.UI.ThemeViewModel
+import com.example.textl.UI.theme.TextlTheme
+import com.example.textl.UI.theme.ThemeViewModel
 import com.example.textl.UI.navigation.AppNavGraph
 import dagger.hilt.android.AndroidEntryPoint
 

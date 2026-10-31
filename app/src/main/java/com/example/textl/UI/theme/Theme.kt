@@ -1,16 +1,16 @@
-package com.example.textl.UI
+package com.example.textl.UI.theme
 
-import android.os.Build
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.*
+import com.example.textl.UI.Pink40
+import com.example.textl.UI.Pink80
+import com.example.textl.UI.Purple40
+import com.example.textl.UI.Purple80
+import com.example.textl.UI.PurpleGrey40
+import com.example.textl.UI.PurpleGrey80
+import com.example.textl.UI.Typography
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
